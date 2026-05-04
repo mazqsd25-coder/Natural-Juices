@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cane Juice - عصائر طبيعية</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --yellow: #F5A800;
+    --yellow-dark: #D4900A;
+    --yellow-light: #FFD04D;
+    --orange: #E8720C;
+    --white: #FFFFFF;
+    --text-dark: #2A1A00;
+    --shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+
+  body {
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(160deg, #F5A800 0%, #E8820C 100%);
+    min-height: 100vh;
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 0;
+  }
+
+  .logo-wrap {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid rgba(255,255,255,0.6);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    margin-bottom: 10px;
+    background: #c8a96e;
+  }
+
+  .logo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ===== NAV TABS ===== */
+  .nav {
+    display: flex;
+    gap: 8px;
+    background: rgba(0,0,0,0.12);
+    border-radius: 50px;
+    padding: 5px;
+    margin: 14px 0 0;
+    width: fit-content;
+  }
+
+  .nav-btn {
+    padding: 8px 18px;
+    border-radius: 50px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.8);
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nav-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.15);
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 50px;
+  }
+
+  .nav-btn:active::after { opacity: 1; }
+
+  .nav-btn.active {
+    background: white;
+    color: var(--yellow-dark);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+
+  /* ===== PAGES ===== */
+  .page { display: none; padding: 20px 16px 30px; }
+  .page.active { display: block; }
+
+  /* ===== ASNAF PAGE ===== */
+  .section-title {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 16px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .product-card {
+    background: rgba(255,255,255,0.92);
+    border-radius: 20px;
+    padding: 16px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-card:active { transform: scale(0.97); }
+
+  .product-card::before {
+    content: '';
+    position: absolute;
+    top: -30px; right: -30px;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(245,168,0,0.18) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .product-img {
+    width: 90px;
+    height: 110px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.15));
+    transition: transform 0.3s;
+  }
+
+  .product-card:hover .product-img { transform: translateY(-4px) scale(1.04); }
+
+  .price-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: var(--orange);
+    color: white;
+    font-size: 15px;
+    font-weight: 900;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(232,114,12,0.4);
+  }
+
+  .product-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-dark);
+    text-align: center;
+  }
+
+  .add-btn {
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 7px 20px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.25s;
+    box-shadow: 0 3px 10px rgba(245,168,0,0.35);
+  }
+
+  .add-btn:active {
+    transform: scale(0.96);
+    background: linear-gradient(135deg, var(--orange), var(--yellow-dark));
+  }
+
+  /* ORDER BUTTON */
+  .order-btn-wrap {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+  }
+
+  .order-btn {
+    background: linear-gradient(135deg, #ff4d4d, #cc0000);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 14px 40px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 17px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 6px 24px rgba(204,0,0,0.4);
+    letter-spacing: 1px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: pulse 2s infinite;
+  }
+
+  .order-btn:active { transform: scale(0.95); }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 6px 24px rgba(204,0,0,0.4); }
+    50% { box-shadow: 0 6px 36px rgba(204,0,0,0.65); }
+  }
+
+  /* ===== OROOOD PAGE ===== */
+  .offers-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .offer-card {
+    background: rgba(255,255,255,0.92);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .offer-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 6px; height: 100%;
+    background: linear-gradient(180deg, var(--yellow), var(--orange));
+    border-radius: 0 20px 20px 0;
+  }
+
+  .offer-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    filter: drop-shadow(0 3px 8px rgba(0,0,0,0.12));
+    flex-shrink: 0;
+  }
+
+  .offer-info { flex: 1; }
+
+  .offer-badge {
+    display: inline-block;
+    background: #ff4d4d;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+  }
+
+  .offer-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+  }
+
+  .offer-price {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--orange);
+  }
+
+  .offer-price span {
+    font-size: 13px;
+    color: #999;
+    text-decoration: line-through;
+    margin-right: 6px;
+  }
+
+  /* ===== SHO3ARAT PAGE ===== */
+  .logos-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding-top: 10px;
+  }
+
+  .logo-main {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid rgba(255,255,255,0.7);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    background: #c8a96e;
+  }
+
+  .logo-main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .slogan-box {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 20px;
+    padding: 16px 28px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+  }
+
+  .slogan-ar {
+    font-size: 22px;
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  .slogan-en {
+    font-size: 14px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 4px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .fruit-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+  }
+
+  .fruit-img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.2));
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .fruit-img:nth-child(2) { animation-delay: 1s; }
+  .fruit-img:nth-child(3) { animation-delay: 2s; }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* ===== TAWASOL PAGE ===== */
+  .tawasol-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-top: 10px;
+  }
+
+  .qr-wrap {
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .qr-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+
+  .qr-img {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+  }
+
+  .qr-sub {
+    font-size: 13px;
+    color: #888;
+    font-weight: 600;
+  }
+
+  /* ===== RIPPLE ===== */
+  .ripple-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    transform: scale(0);
+    animation: ripple-anim 0.6s linear;
+    pointer-events: none;
+  }
+
+  @keyframes ripple-anim {
+    to { transform: scale(4); opacity: 0; }
+  }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(30,30,30,0.92);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 200;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* bottom padding for fixed button */
+  .page-inner { padding-bottom: 80px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-wrap">
+    <img src="logo.png" alt="Cane Juice Logo">
+  </div>
+
+  <nav class="nav">
+    <button class="nav-btn active ripple-container" onclick="showPage('asnaf', this)">الأصناف</button>
+    <button class="nav-btn ripple-container" onclick="showPage('oroood', this)">العروض</button>
+    <button class="nav-btn ripple-container" onclick="showPage('sho3arat', this)">الشعارات</button>
+    <button class="nav-btn ripple-container" onclick="showPage('tawasol', this)">التواصل</button>
+  </nav>
+</div>
+
+<!-- ASNAF -->
+<div class="page active page-inner" id="asnaf">
+  <p class="section-title">🧃 اختر عصيرك المفضل</p>
+  <div class="products-grid">
+
+    <div class="product-card ripple-container">
+      <div class="price-badge">34</div>
+      <img src="bottle.png" class="product-img" alt="عصير برتقال">
+      <div class="product-name">عصير برتقال</div>
+      <button class="add-btn ripple-container" onclick="addToCart(this, 'عصير برتقال')">أضف للسلة</button>
+    </div>
+
+    <div class="product-card ripple-container">
+      <div class="price-badge">34</div>
+      <img src="bottle.png" class="product-img" alt="عصير مانجو" style="width:110px;height:135px;">
+      <div class="product-name">عصير مانجو</div>
+      <button class="add-btn ripple-container" onclick="addToCart(this, 'عصير مانجو')">أضف للسلة</button>
+    </div>
+
+    <div class="product-card ripple-container">
+      <div class="price-badge">34</div>
+      <img src="bottle.png" class="product-img" alt="عصير ليمون">
+      <div class="product-name">عصير ليمون</div>
+      <button class="add-btn ripple-container" onclick="addToCart(this, 'عصير ليمون')">أضف للسلة</button>
+    </div>
+
+    <div class="product-card ripple-container">
+      <div class="price-badge">34</div>
+      <img src="bottle.png" class="product-img" alt="خلطة خاصة">
+      <div class="product-name">خلطة خاصة</div>
+      <button class="add-btn ripple-container" onclick="addToCart(this, 'خلطة خاصة')">أضف للسلة</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- OROOOD -->
+<div class="page page-inner" id="oroood">
+  <p class="section-title">🔥 عروض اليوم</p>
+  <div class="offers-grid">
+
+    <div class="offer-card">
+      <img src="cup.png" class="offer-img" alt="عصير موز">
+      <div class="offer-info">
+        <span class="offer-badge">عرض اليوم</span>
+        <div class="offer-name">عصير موز</div>
+        <div class="offer-price"><span>40 ر</span>29 ر</div>
+      </div>
+    </div>
+
+    <div class="offer-card">
+      <img src="bottle_tilt.png" class="offer-img" alt="عصير ليمون">
+      <div class="offer-info">
+        <span class="offer-badge">خصم 20%</span>
+        <div class="offer-name">عصير ليمون بارد</div>
+        <div class="offer-price"><span>34 ر</span>27 ر</div>
+      </div>
+    </div>
+
+    <div class="offer-card">
+      <img src="bottle.png" class="offer-img" alt="باقة عائلية">
+      <div class="offer-info">
+        <span class="offer-badge">الأكثر طلباً</span>
+        <div class="offer-name">باقة عائلية × 4</div>
+        <div class="offer-price"><span>136 ر</span>99 ر</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- SHO3ARAT -->
+<div class="page page-inner" id="sho3arat">
+  <div class="logos-page">
+    <div class="logo-main">
+      <img src="logo.png" alt="Cane Juice">
+    </div>
+    <div class="slogan-box">
+      <div class="slogan-ar">مذاق لا يُنسى 🍊</div>
+      <div class="slogan-en">CANE JUICE — YASSER AL JASCE</div>
+    </div>
+    <div class="fruit-row">
+      <img src="orange.png" class="fruit-img" alt="برتقال">
+      <img src="bottle.png" class="fruit-img" style="height:90px;width:50px;" alt="زجاجة">
+      <img src="lemon.png" class="fruit-img" alt="ليمون">
+    </div>
+  </div>
+</div>
+
+<!-- TAWASOL -->
+<div class="page page-inner" id="tawasol">
+  <div class="tawasol-page">
+    <div class="qr-wrap">
+      <div class="qr-label">امسح الكود للتواصل</div>
+      <img src="qr.jpg" class="qr-img" alt="QR Code">
+      <div class="qr-sub">Cane Juice — تواصل معنا</div>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER BUTTON -->
+<div class="order-btn-wrap">
+  <button class="order-btn ripple-container" onclick="showOrder()">🛒 اطلب الآن</button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  function showPage(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    createRipple(btn, event);
+  }
+
+  function createRipple(el, e) {
+    if (!e) return;
+    const rect = el.getBoundingClientRect();
+    const r = document.createElement('span');
+    r.className = 'ripple';
+    const size = Math.max(rect.width, rect.height);
+    r.style.width = r.style.height = size + 'px';
+    r.style.left = (e.clientX - rect.left - size / 2) + 'px';
+    r.style.top = (e.clientY - rect.top - size / 2) + 'px';
+    el.appendChild(r);
+    setTimeout(() => r.remove(), 700);
+  }
+
+  document.querySelectorAll('.ripple-container').forEach(el => {
+    el.addEventListener('click', e => createRipple(el, e));
+  });
+
+  let cart = [];
+
+  function addToCart(btn, name) {
+    cart.push(name);
+    showToast('✅ تمت الإضافة: ' + name);
+    btn.textContent = '✓ تمت الإضافة';
+    btn.style.background = 'linear-gradient(135deg, #2ecc71, #27ae60)';
+    setTimeout(() => {
+      btn.textContent = 'أضف للسلة';
+      btn.style.background = '';
+    }, 1800);
+  }
+
+  function showOrder() {
+    if (cart.length === 0) {
+      showToast('🛒 السلة فارغة — أضف منتجات أولاً');
+    } else {
+      showToast('✅ تم إرسال طلبك! (' + cart.length + ' منتج)');
+      cart = [];
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+
+</body>
+</html>
