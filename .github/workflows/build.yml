@@ -1,0 +1,21 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pyinstaller
+      - run: pyinstaller --onefile --noconsole nuke_media.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nuke_media_exe
+          path: dist/nuke_media.exe
